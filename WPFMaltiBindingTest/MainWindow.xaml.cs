@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace WPFMaltiBindingTest
 {
@@ -7,64 +9,73 @@ namespace WPFMaltiBindingTest
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
+    {
+        private string _userInput = string.Empty;
+
+        // ユーザー入力用文字列
+        public string UserInput
         {
-            private string _userInput = string.Empty;
-
-
-
-            //ユーザー入力用文字列
-            public string UserInput
+            get => _userInput;
+            set
             {
-                get => _userInput;
-                set
+                if (_userInput != value)
                 {
-                    if (_userInput != value)
-                    {
-                        _userInput = value;
-                        StringB = $"-b:v {_userInput}k";
-                        OnPropertyChanged(nameof(UserInput));
-                    }
+                    _userInput = value;
+                    StringB = $"-b:v {_userInput}k";
+                    OnPropertyChanged(nameof(UserInput));
                 }
             }
+        }
 
+        private string _stringB = string.Empty;
 
-            // ビューモデルのプロパティを公開するためのプロパティ
-            private string _stringB { get; set; } = string.Empty;
-            // INotifyPropertyChangedのイベント
-            public event PropertyChangedEventHandler? PropertyChanged;
-
-            // StringBプロパティ
-            public string StringB
+        // StringBプロパティ
+        public string StringB
+        {
+            get => _stringB;
+            set
             {
-                get { return _stringB; }
-                set
+                if (_stringB != value)
                 {
-              
-                    if (_stringB != value)
-                    {
-
-                        _stringB = value;
-                        OnPropertyChanged(nameof(StringB));  // 変更通知
-                   
-                    }
+                    _stringB = value;
+                    OnPropertyChanged(nameof(StringB));
                 }
             }
+        }
 
+        // INotifyPropertyChangedのイベント
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-            public MainWindow()
+        public MainWindow()
+        {
+            InitializeComponent();
+            SetupBindings();
+        }
+
+        // バインディングのセットアップ
+        private void SetupBindings()
+        {
+            // ユーザー入力バインディング
+            Binding userInputBinding = new Binding("UserInput")
             {
-                InitializeComponent();
-                // ビューモデルまたはコードビハインドのプロパティに初期値を設定
+                Source = this,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+            textBoxInput.SetBinding(TextBox.TextProperty, userInputBinding);
 
-
-                // DataContextにこのウィンドウ自体をセット（コードビハインドプロパティ用）
-                DataContext = this;
-            }
-            // プロパティが変更された時にUIに通知するためのヘルパーメソッド
-            protected void OnPropertyChanged(string propertyName)
+            // マルチバインディング設定
+            MultiBinding multiBinding = new MultiBinding()
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+                StringFormat = "{0}"
+            };
+            multiBinding.Bindings.Add(new Binding("StringB") { Source = this, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            textBlockOutput.SetBinding(TextBlock.TextProperty, multiBinding);
+        }
 
+        // プロパティが変更された時にUIに通知するためのヘルパーメソッド
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+}
