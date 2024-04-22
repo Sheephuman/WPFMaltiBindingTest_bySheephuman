@@ -3,29 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPFMaltiBindingTest" 
+        xmlns:local="clr-namespace:WPFMaltiBindingTest"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
-
     <Grid>
         <!-- ユーザー入力のためのテキストボックス -->
-        <TextBox x:Name="textBoxInput" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="30"
-                 Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"/>
+        <StackPanel>
+            <TextBox x:Name="UserInputA" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="30"
+                     Text="{Binding UserInputA, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox x:Name="UserInputB" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="30"
+                     Text="{Binding UserInputB, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <!-- フォーマットされた文字列を表示するテキストブロック -->
-        <TextBlock HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" FontSize="16">
-            <TextBlock.Text>
-                <!-- 入力の順番を設定　{}：XAMLのエスケープシーケンスで、文字列のフォーマットを始めることを示します。
-                {0}：最初のバインドソースの値を挿入する場所 
-                -->
-                <MultiBinding StringFormat="{}{0}">
-                    <!-- ユーザー入力から更新されたStringBのバインド設定 -->
-                    <Binding Path="StringB"/>
-                    <!-- 何も表示しないが、更新トリガーのためにUserInputをバインド -->
-                    <Binding Path="UserInput"/>
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+            <!-- フォーマットされた文字列を表示するテキストブロック -->
+            <TextBlock HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" FontSize="16"
+                   Text="{Binding AllInput}">
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </Window>
